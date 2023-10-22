@@ -1,0 +1,55 @@
+#!/bin/bash
+
+fileName="emails.txt"
+
+function add_entry() {
+    name="$1"
+    email="$2"
+    echo "$name $email" >> "$fileName"
+}
+
+function list_entries() {
+    if [[ -s "$fileName" ]]; then
+        cat "$fileName"
+    else
+        echo "Addressbook is empty"
+    fi
+}
+
+function remove_entries() {
+    name="$1"
+    if [[ -s "$fileName" ]]; then
+        sed -i "/^$name/d" "$fileName"
+    fi
+}
+
+function clear_addressbook() {
+    > "$fileName"
+}
+
+function lookup() {
+    name="$1"
+    grep -E "^$name" "$fileName"
+}
+
+case "$1" in
+    "new")
+        add_entry "$2" "$3"
+        ;;
+    "list")
+        list_entries
+        ;;
+    "remove")
+        remove_entries "$2"
+        ;;
+    "clear")
+        clear_addressbook
+        ;;
+    "lookup")
+        lookup "$2"
+        ;;
+    *)
+        echo "Usage: $0 {new|list|remove|clear|lookup}"
+        exit 1
+        ;;
+esac
